@@ -30,14 +30,12 @@ Every action is written to `jml-log.csv`. Existing OUs, groups and users are ski
 ```
 ad-jml-automation-lab/
 ├── Invoke-JML.ps1
-├── promote-dc.ps1
-├── data/
-│   ├── users.csv
-│   ├── movers.csv
-│   └── leavers.csv
-├── sample-output/
-│   └── jml-log.csv
-├── screenshots/
+├── promote-dc.ps1.png      (screenshot of the wizard's generated script)
+├── users.csv
+├── movers.csv
+├── leavers.csv
+├── jml-log.csv             (sample output)
+├── *.png                   (walkthrough screenshots)
 └── README.md
 ```
 
@@ -47,9 +45,9 @@ From an elevated PowerShell prompt on the domain controller, in the folder holdi
 
 ```powershell
 .\Invoke-JML.ps1 -Mode Setup
-.\Invoke-JML.ps1 -Mode Joiner -CsvPath .\data\users.csv   # prompts for an initial password
-.\Invoke-JML.ps1 -Mode Mover  -CsvPath .\data\movers.csv
-.\Invoke-JML.ps1 -Mode Leaver -CsvPath .\data\leavers.csv
+.\Invoke-JML.ps1 -Mode Joiner -CsvPath .\users.csv   # prompts for an initial password
+.\Invoke-JML.ps1 -Mode Mover  -CsvPath .\movers.csv
+.\Invoke-JML.ps1 -Mode Leaver -CsvPath .\leavers.csv
 ```
 
 The initial password is typed at a masked prompt. It is never stored in the script or the log.
@@ -57,52 +55,52 @@ The initial password is typed at a masked prompt. It is never stored in the scri
 ## Walkthrough
 
 ### 1. Domain controller
-Installed the AD DS role and promoted the server to a new forest, `lab.local`, using the wizard. The wizard's "View script" output is saved as [`promote-dc.ps1`](promote-dc.ps1).
+Installed the AD DS role and promoted the server to a new forest, `lab.local`, using the wizard. The wizard's "View script" output is saved as [`promote-dc.ps1`](promote-dc.ps1.png).
 
-![Domain verified](screenshots/01-domain-verified.png)
+![Domain verified](Domain%20controller%20configured%202.png)
 
 ### 2. Setup: OUs and groups
-![OU tree](screenshots/02-ou-tree.png)
-![Security groups](screenshots/03-groups.png)
+![OU tree](LabCorp%20installed.png)
+![Security groups](Confirming%20departments%20installed.png)
 
 ### 3. Joiner: six users created
-![Joiner output](screenshots/04-joiner-output.png)
+![Joiner output](Initial%20user%20password%20installed.png)
 
 Users landed in their department OUs:
 
-![IT OU](screenshots/05a-it-ou.png)
-![HR OU](screenshots/05b-hr-ou.png)
-![Sales OU](screenshots/05c-sales-ou.png)
+![IT OU](IT%20team%20confirmed.png)
+![HR OU](HR%20team%20confirmed.png)
+![Sales OU](Sales%20team%20confirmed.png)
 
 ### 4. Mover: `fdubois` moves from Sales to IT
-Before: in the Sales OU and a member of `SG-Sales`.
+Before: in the Sales OU.
 
-![fdubois before](screenshots/06-fdubois-before.png)
+![fdubois before](Sales%20team%20confirmed.png)
 
 After: moved to the IT OU, member of `SG-IT`, department updated.
 
-![Mover result](screenshots/07-mover-result.png)
-![fdubois after](screenshots/07b-fdubois-after.png)
+![Mover result](FDubois%20moved%20from%20Sales%20to%20IT.png)
+![fdubois after](FDubois%20properties%20confirmed.png)
 
 ### 5. Leaver: `bcarter` is offboarded
 Account disabled, groups removed, description stamped, and the object moved to the Disabled OU. The record stays for audit purposes.
 
-![Leaver result](screenshots/08-leaver-result.png)
-![bcarter groups](screenshots/08b-bcarter-groups.png)
-![bcarter disabled](screenshots/08c-bcarter-disabled.png)
+![Leaver result](BCarter%20Disabled%20confirmed.png)
+![bcarter groups](Bcarter%20Member%20propterties.png)
+![bcarter disabled](Ben%20Carter%20after%20PS%20confirmation.png)
 
 ### 6. Verification
 Group membership after the mover and leaver runs:
 
-![Group membership check](screenshots/09-membership-check.png)
+![Group membership check](Groups%20and%20Users%20after%20confirmation.png)
 
 Final state of all users:
 
-![Summary table](screenshots/10-summary-table.png)
+![Summary table](Joiners%20Movers%20Leavers%20Summary.png)
 
 Rerunning Setup prints nothing, and rerunning Joiner skips every existing user, so the script is safe to repeat:
 
-![Rerun skips existing users](screenshots/11-rerun-skip.png)
+![Rerun skips existing users](Users%20exist%20confirmation.png)
 
 ## What broke (and how I fixed it)
 
